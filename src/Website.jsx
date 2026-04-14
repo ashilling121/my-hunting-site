@@ -6,11 +6,18 @@ const photos = [
   "/IMG_2376.jpg",
   "/IMG_3953.jpg",
   "/IMG_4096.jpg",
+  "/IMG_4097.jpg",
+  "/IMG_4146.jpg",
+  "/IMG_4150.jpg",
   "/IMG_4252.jpg",
+  "/IMG_4304.jpg",
   "/IMG_4408.jpg",
+  "/IMG_4416.jpg",
   "/IMG_4475.jpg",
   "/IMG_4680.jpg",
   "/IMG_4702.jpg",
+  "/IMG_4758.jpg",
+  "/IMG_4792.jpg",
 ];
 
 export default function Website() {
