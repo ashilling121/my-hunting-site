@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import emailjs from "@emailjs/browser";
 
 const photos = [
   "/IMG_0842.jpg",
@@ -24,14 +25,32 @@ export default function Website() {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({firstName:"",lastName:"",location:"",size:"",description:""});
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
   const [current, setCurrent] = useState(0);
 
   const handleSubmit = () => {
-    const subject = `Consultation Request from ${formData.firstName} ${formData.lastName}`;
-    const body = `Name: ${formData.firstName} ${formData.lastName}%0AProperty Location: ${formData.location}%0AProperty Size: ${formData.size}%0ADescription: ${formData.description}`;
-    window.location.href = `mailto:ashilling@121g.io?subject=${subject}&body=${body}`;
-    setSubmitted(true);
-    setShowForm(false);
+    setSending(true);
+    emailjs.send(
+      "service_fm4gq9i",
+      "template_mm375k7",
+      {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        location: formData.location,
+        size: formData.size,
+        description: formData.description,
+        name: `${formData.firstName} ${formData.lastName}`,
+      },
+      "tt1-R3-37C-7H_4FF"
+    ).then(() => {
+      setSending(false);
+      setSubmitted(true);
+      setShowForm(false);
+      setFormData({firstName:"",lastName:"",location:"",size:"",description:""});
+    }).catch(() => {
+      setSending(false);
+      alert("Something went wrong. Please try again.");
+    });
   };
 
   const prev = () => setCurrent((current - 1 + photos.length) % photos.length);
@@ -63,7 +82,9 @@ export default function Website() {
             <input placeholder="Property Size (acres)" value={formData.size} onChange={e => setFormData({...formData,size:e.target.value})} style={{width:"100%",padding:"10px",marginBottom:"12px",borderRadius:"8px",border:"1px solid #d97706",boxSizing:"border-box",backgroundColor:"#0a1a0a",color:"white"}} />
             <textarea placeholder="What are you looking for?" value={formData.description} onChange={e => setFormData({...formData,description:e.target.value})} style={{width:"100%",padding:"10px",marginBottom:"12px",borderRadius:"8px",border:"1px solid #d97706",boxSizing:"border-box",backgroundColor:"#0a1a0a",color:"white",height:"100px"}} />
             <div style={{display:"flex",gap:"12px"}}>
-              <button onClick={handleSubmit} style={{flex:1,padding:"12px",backgroundColor:"#d97706",color:"white",border:"none",borderRadius:"8px",cursor:"pointer",fontWeight:"bold",fontSize:"1rem"}}>Submit</button>
+              <button onClick={handleSubmit} disabled={sending} style={{flex:1,padding:"12px",backgroundColor:"#d97706",color:"white",border:"none",borderRadius:"8px",cursor:"pointer",fontWeight:"bold",fontSize:"1rem"}}>
+                {sending ? "Sending..." : "Submit"}
+              </button>
               <button onClick={() => setShowForm(false)} style={{flex:1,padding:"12px",backgroundColor:"#1a3a1a",color:"white",border:"none",borderRadius:"8px",cursor:"pointer",fontWeight:"bold",fontSize:"1rem"}}>Cancel</button>
             </div>
           </div>
